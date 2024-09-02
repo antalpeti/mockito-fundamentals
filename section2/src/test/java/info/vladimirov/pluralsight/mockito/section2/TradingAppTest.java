@@ -12,36 +12,37 @@ import java.util.Collection;
 
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
+
 class TradingAppTest {
 
-    @Test
-    void executeTradeGuaranteeHappyPath() {
-        AuditReport auditRepo = Mockito.mock();
-        Exchange exchange = mock();
-        MarketData marketData = mock();
+  @Test
+  void executeTradeGuaranteeHappyPath() {
+    AuditReport auditRepo = Mockito.mock();
+    Exchange exchange = mock();
+    MarketData marketData = mock();
 
-        Collection<? extends Object> marketData1 = mock();
+    Collection<? extends Object> marketData1 = mock();
 
-        TradingApp tradingApp = new TradingApp(auditRepo, marketData, exchange);
+    TradingApp tradingApp = new TradingApp(auditRepo, marketData, exchange);
 
-        final String symbol = "PS";
-        double px = 22.5;
-        int qty = 100;
+    final String symbol = "PS";
+    double px = 22.5;
+    int qty = 100;
 
-        Mockito.when(marketData.isCurrentOrderPossible(Mockito.anyString(),
-                Mockito.anyInt(), Mockito.anyDouble())).thenReturn(true);
+    Mockito.when(marketData.isCurrentOrderPossible(Mockito.anyString(),
+        Mockito.anyInt(), Mockito.anyDouble())).thenReturn(true);
 
-        Mockito.when(exchange.execute(
-                Mockito.anyString(), Mockito.anyInt(), Mockito.anyDouble())).thenReturn(true);
+    Mockito.when(exchange.execute(
+        Mockito.anyString(), Mockito.anyInt(), Mockito.anyDouble())).thenReturn(true);
 
-        boolean executionOutcome = tradingApp.executeTradeGuarantee(symbol, qty, px);
-        Assertions.assertTrue(executionOutcome);
+    boolean executionOutcome = tradingApp.executeTradeGuarantee(symbol, qty, px);
+    Assertions.assertTrue(executionOutcome);
 
-        Mockito.verify(marketData).isCurrentOrderPossible(symbol, qty, px);
+    Mockito.verify(marketData).isCurrentOrderPossible(symbol, qty, px);
 
-        Mockito.verify(auditRepo).reportTrade(Mockito.anyString(), Mockito.eq(qty), Mockito.eq(px));
+    Mockito.verify(auditRepo).reportTrade(Mockito.anyString(), Mockito.eq(qty), Mockito.eq(px));
 
-    }
+  }
 
 
 }
